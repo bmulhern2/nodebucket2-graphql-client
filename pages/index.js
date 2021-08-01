@@ -1,4 +1,6 @@
-import Head from 'next/head'
+import Head from 'next/head';
+import { gql } from 'apollo-boost';
+import { Query, Mutation } from 'react-apollo';
 
 export default function Home() {
   return (
