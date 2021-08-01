@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { request } from 'graphql-request';
 
 const Home = () => {
-    let [tasks, setTasks] = useState();
+    let [tasks, setTasks] = useState([]);
     let [newTask, setNewTask] = useState();
     let [email, setEmail] = useState();
     useEffect(() => {
@@ -19,9 +19,9 @@ const Home = () => {
         const variables = {
             email: email
         };
-        console.log(variables['email']);
         request(url, mutation, variables).then(result => {
-            result['taskIDs'].map((_id, i) => {
+            var arr = [];
+            result['taskIDs'].forEach((_id, i) => {
                 const url = localStorage.getItem('url');
                 const mutation = `
                     query task($_id: String!) {
@@ -35,8 +35,7 @@ const Home = () => {
                     _id: _id['_id']
                 };
                 request(url, mutation, variables).then(result => {
-                    setTasks(...result['task']['task']['task']);
-                    console.log(result);
+                   // Find A Way to Push Item To Array And Save To State
                 }).catch(err => {
                     console.error(err);
                 });
@@ -60,7 +59,7 @@ const Home = () => {
             }
         `;
         const variables = {
-            email: currentEmail,
+            email: email,
             task: newTask
         };
         request(url, mutation, variables).then(result => {
@@ -75,6 +74,9 @@ const Home = () => {
                 <input className="text-center" type="text" placeholder="New Task" onChange={handleChange} />
                 <button className="text-center" onClick={handleClick}>Add New Task</button>
             </div>
+            { tasks !== [] ? tasks.map((task, i) => (
+                <div className="text-center" key={i}>{task.task}</div>
+            )) : <i>No Tasks!</i>}
         </div>
     );
 };
